@@ -1,5 +1,6 @@
 FROM alpine:3.16
 
+RUN apk add --no-cache ca-certificates
 RUN apk add --no-cache chrony=4.2-r0
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
