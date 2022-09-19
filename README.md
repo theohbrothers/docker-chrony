@@ -1,4 +1,3 @@
-@"
 # docker-chrony
 
 [![github-actions](https://github.com/theohbrothers/docker-chrony/workflows/ci-master-pr/badge.svg)](https://github.com/theohbrothers/docker-chrony/actions)
@@ -11,25 +10,11 @@ Dockerized [chrony](https://chrony.tuxfamily.org/).
 
 | Tag | Dockerfile Build Context |
 |:-------:|:---------:|
-$(
-($VARIANTS | % {
-    if ( $_['tag_as_latest'] ) {
-@"
-| ``:$( $_['tag'] )``, ``:latest`` | [View](variants/$( $_['tag'] ) ) |
+| `:v4.2`, `:latest` | [View](variants/v4.2 ) |
+| `:v4.1`, `:latest` | [View](variants/v4.1 ) |
+| `:v4.0`, `:latest` | [View](variants/v4.0 ) |
+| `:v3.5.1`, `:latest` | [View](variants/v3.5.1 ) |
 
-"@
-    }else {
-@"
-| ``:$( $_['tag'] )`` | [View](variants/$( $_['tag'] ) ) |
-
-"@
-    }
-}) -join ''
-)
-
-"@
-
-@'
 ## Usage
 
 ### No NTS
@@ -87,4 +72,3 @@ EOF
 # Start server
 docker run -it -p 123:123/udp -v $(pwd)/chrony.conf:/etc/chrony/chrony.conf:ro theohbrothers/docker-chrony:v4.2
 ```
-'@
