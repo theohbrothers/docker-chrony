@@ -60,8 +60,8 @@ $VARIANTS = @(
                 # Docker image tag. E.g. '3.8-curl'
                 tag = @(
                         "v$( $variant['package_version'] )" -replace '-r\d+', ''    # E.g. Strip out the '-r' in '2.3.0.0-r1'
-                        $variant['distro']
-                        $variant['distro_version']
+                        # $variant['distro']
+                        # $variant['distro_version']
                         $subVariant['components'] | ? { $_ }
                 ) -join '-'
                 tag_as_latest = if ( $subVariant.Contains('tag_as_latest') ) {
