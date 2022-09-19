@@ -15,7 +15,7 @@ $local:VARIANTS_MATRIX = @(
         distro = 'alpine'
         distro_version = '3.14'
         subvariants = @(
-            @{ components = @(); tag_as_latest = $true }
+            @{ components = @() }
         )
     }
     @{
@@ -24,7 +24,7 @@ $local:VARIANTS_MATRIX = @(
         distro = 'alpine'
         distro_version = '3.13'
         subvariants = @(
-            @{ components = @(); tag_as_latest = $true }
+            @{ components = @() }
         )
     }
     @{
@@ -33,7 +33,7 @@ $local:VARIANTS_MATRIX = @(
         distro = 'alpine'
         distro_version = '3.12'
         subvariants = @(
-            @{ components = @(); tag_as_latest = $true }
+            @{ components = @() }
         )
     }
 )
