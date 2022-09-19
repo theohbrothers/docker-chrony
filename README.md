@@ -4,16 +4,16 @@
 [![github-release](https://img.shields.io/github/v/release/theohbrothers/docker-chrony?style=flat-square)](https://github.com/theohbrothers/docker-chrony/releases/)
 [![docker-image-size](https://img.shields.io/docker/image-size/theohbrothers/docker-chrony/latest)](https://hub.docker.com/r/theohbrothers/docker-chrony)
 
-Dockerized [chrony](https://chrony.tuxfamily.org/).
+Dockerized [chrony](https://chrony.tuxfamily.org/) based on alpine.
 
 ## Tags
 
 | Tag | Dockerfile Build Context |
 |:-------:|:---------:|
 | `:v4.2`, `:latest` | [View](variants/v4.2 ) |
-| `:v4.1`, `:latest` | [View](variants/v4.1 ) |
-| `:v4.0`, `:latest` | [View](variants/v4.0 ) |
-| `:v3.5.1`, `:latest` | [View](variants/v3.5.1 ) |
+| `:v4.1` | [View](variants/v4.1 ) |
+| `:v4.0` | [View](variants/v4.0 ) |
+| `:v3.5.1` | [View](variants/v3.5.1 ) |
 
 ## Usage
 

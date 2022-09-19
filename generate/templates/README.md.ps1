@@ -5,7 +5,7 @@
 [![github-release](https://img.shields.io/github/v/release/theohbrothers/docker-chrony?style=flat-square)](https://github.com/theohbrothers/docker-chrony/releases/)
 [![docker-image-size](https://img.shields.io/docker/image-size/theohbrothers/docker-chrony/latest)](https://hub.docker.com/r/theohbrothers/docker-chrony)
 
-Dockerized [chrony](https://chrony.tuxfamily.org/).
+Dockerized [chrony](https://chrony.tuxfamily.org/) based on alpine.
 
 ## Tags
 
