@@ -2,11 +2,20 @@
 $local:VARIANTS_MATRIX = @(
     @{
         package = 'chrony'
+        package_version = '4.3-r0'
+        distro = 'alpine'
+        distro_version = '3.17'
+        subvariants = @(
+            @{ components = @() }
+        )
+    }
+    @{
+        package = 'chrony'
         package_version = '4.2-r0'
         distro = 'alpine'
         distro_version = '3.16'
         subvariants = @(
-            @{ components = @(); tag_as_latest = $true }
+            @{ components = @() }
         )
     }
     @{
@@ -64,11 +73,7 @@ $VARIANTS = @(
                         # $variant['distro_version']
                         $subVariant['components'] | ? { $_ }
                 ) -join '-'
-                tag_as_latest = if ( $subVariant.Contains('tag_as_latest') ) {
-                                    $subVariant['tag_as_latest']
-                                } else {
-                                    $false
-                                }
+                tag_as_latest = if ($variant['package_version'] -eq $local:VARIANTS_MATRIX[0]['package_version'] -and $subVariant['components'].Count -eq 0) { $true } else { $false }
             }
         }
     }
