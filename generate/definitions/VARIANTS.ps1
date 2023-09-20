@@ -77,7 +77,7 @@ $VARIANTS = @(
                 }
                 # Docker image tag. E.g. '3.8-curl'
                 tag = @(
-                        "v$( $variant['package_version'] )"
+                        $variant['package_version']
                         # $variant['distro']
                         # $variant['distro_version']
                         $subVariant['components'] | ? { $_ }
