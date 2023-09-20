@@ -32,10 +32,10 @@ jobs:
       run: |
         git diff --exit-code
 
-  build-v4-4:
+  build-4-4:
     runs-on: ubuntu-latest
     env:
-      VARIANT: v4.4
+      VARIANT: 4.4
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -107,7 +107,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.4
+        context: variants/4.4
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
@@ -121,7 +121,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.4
+        context: variants/4.4
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -134,7 +134,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.4
+        context: variants/4.4
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -153,10 +153,10 @@ jobs:
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  build-v4-3:
+  build-4-3:
     runs-on: ubuntu-latest
     env:
-      VARIANT: v4.3
+      VARIANT: 4.3
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -228,7 +228,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.3
+        context: variants/4.3
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
@@ -242,7 +242,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.3
+        context: variants/4.3
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -255,7 +255,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.3
+        context: variants/4.3
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -273,10 +273,10 @@ jobs:
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  build-v4-2:
+  build-4-2:
     runs-on: ubuntu-latest
     env:
-      VARIANT: v4.2
+      VARIANT: 4.2
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -348,7 +348,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.2
+        context: variants/4.2
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
@@ -362,7 +362,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.2
+        context: variants/4.2
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -375,7 +375,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.2
+        context: variants/4.2
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -393,10 +393,10 @@ jobs:
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  build-v4-1:
+  build-4-1:
     runs-on: ubuntu-latest
     env:
-      VARIANT: v4.1
+      VARIANT: 4.1
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -468,7 +468,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.1
+        context: variants/4.1
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
@@ -482,7 +482,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.1
+        context: variants/4.1
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -495,7 +495,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.1
+        context: variants/4.1
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -513,10 +513,10 @@ jobs:
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  build-v4-0:
+  build-4-0:
     runs-on: ubuntu-latest
     env:
-      VARIANT: v4.0
+      VARIANT: 4.0
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -588,7 +588,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.0
+        context: variants/4.0
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
@@ -602,7 +602,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.0
+        context: variants/4.0
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -615,7 +615,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
-        context: variants/v4.0
+        context: variants/4.0
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -633,10 +633,10 @@ jobs:
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  build-v3-5-1:
+  build-3-5-1:
     runs-on: ubuntu-latest
     env:
-      VARIANT: v3.5.1
+      VARIANT: 3.5.1
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -708,7 +708,7 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v3.5.1
+        context: variants/3.5.1
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
@@ -722,7 +722,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
       with:
-        context: variants/v3.5.1
+        context: variants/3.5.1
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -735,7 +735,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
-        context: variants/v3.5.1
+        context: variants/3.5.1
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
@@ -754,7 +754,7 @@ jobs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   update-draft-release:
-    needs: [build-v4-4, build-v4-3, build-v4-2, build-v4-1, build-v4-0, build-v3-5-1]
+    needs: [build-4-4, build-4-3, build-4-2, build-4-1, build-4-0, build-3-5-1]
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
@@ -767,7 +767,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-draft-release:
-    needs: [build-v4-4, build-v4-3, build-v4-2, build-v4-1, build-v4-0, build-v3-5-1]
+    needs: [build-4-4, build-4-3, build-4-2, build-4-1, build-4-0, build-3-5-1]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -782,7 +782,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   update-dockerhub-description:
-    needs: [build-v4-4, build-v4-3, build-v4-2, build-v4-1, build-v4-0, build-v3-5-1]
+    needs: [build-4-4, build-4-3, build-4-2, build-4-1, build-4-0, build-3-5-1]
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
