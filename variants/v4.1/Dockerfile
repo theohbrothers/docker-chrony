@@ -2,7 +2,7 @@ FROM alpine:3.14
 
 # Install chrony
 RUN set -eux; \
-    apk add --no-cache chrony=4.1-r0; \
+    apk add --no-cache chrony~=4.1; \
     chronyd --version; \
     chronyc --version
 

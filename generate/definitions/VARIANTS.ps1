@@ -2,7 +2,7 @@
 $local:VARIANTS_MATRIX = @(
     @{
         package = 'chrony'
-        package_version = '4.3-r0'
+        package_version = '4.3'
         distro = 'alpine'
         distro_version = '3.17'
         subvariants = @(
@@ -11,7 +11,7 @@ $local:VARIANTS_MATRIX = @(
     }
     @{
         package = 'chrony'
-        package_version = '4.2-r0'
+        package_version = '4.2'
         distro = 'alpine'
         distro_version = '3.16'
         subvariants = @(
@@ -20,7 +20,7 @@ $local:VARIANTS_MATRIX = @(
     }
     @{
         package = 'chrony'
-        package_version = '4.1-r0'
+        package_version = '4.1'
         distro = 'alpine'
         distro_version = '3.14'
         subvariants = @(
@@ -29,7 +29,7 @@ $local:VARIANTS_MATRIX = @(
     }
     @{
         package = 'chrony'
-        package_version = '4.0-r1'
+        package_version = '4.0'
         distro = 'alpine'
         distro_version = '3.13'
         subvariants = @(
@@ -38,7 +38,7 @@ $local:VARIANTS_MATRIX = @(
     }
     @{
         package = 'chrony'
-        package_version = '3.5.1-r0'
+        package_version = '3.5.1'
         distro = 'alpine'
         distro_version = '3.12'
         subvariants = @(
@@ -68,7 +68,7 @@ $VARIANTS = @(
                 }
                 # Docker image tag. E.g. '3.8-curl'
                 tag = @(
-                        "v$( $variant['package_version'] )" -replace '-r\d+', ''    # E.g. Strip out the '-r' in '2.3.0.0-r1'
+                        "v$( $variant['package_version'] )"
                         # $variant['distro']
                         # $variant['distro_version']
                         $subVariant['components'] | ? { $_ }
