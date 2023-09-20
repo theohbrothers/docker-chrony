@@ -3,7 +3,7 @@ FROM $( $VARIANT['_metadata']['distro'] ):$( $VARIANT['_metadata']['distro_versi
 
 # Install chrony
 RUN set -eux; \
-    apk add --no-cache $( $VARIANT['_metadata']['package'] )=$( $VARIANT['_metadata']['package_version'] ); \
+    apk add --no-cache $( $VARIANT['_metadata']['package'] )~=$( $VARIANT['_metadata']['package_version'] ); \
     chronyd --version; \
     chronyc --version
 
