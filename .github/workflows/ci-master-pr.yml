@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
     - master
+  merge_group:
 jobs:
   test-nogitdiff:
     runs-on: ubuntu-latest
@@ -34,8 +35,6 @@ jobs:
 
   build-4-4:
     runs-on: ubuntu-latest
-    env:
-      VARIANT: 4.4
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -65,14 +64,22 @@ jobs:
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.VARIANT }}-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-4.4-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-buildx-${{ env.VARIANT }}-
+          ${{ runner.os }}-buildx-4.4-
           ${{ runner.os }}-buildx-
+
+    - name: Login to Docker Hub registry
+      # Run on master and tags
+      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
+        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
 
     # This step generates the docker tags
     - name: Prepare
-      id: prep
+      id: prep-4-4
       run: |
         set -e
 
@@ -85,24 +92,17 @@ jobs:
         # Generate docker image tags
         # E.g. 'v0.0.0-<variant>' and 'v0.0.0-abc0123-<variant>'
         # E.g. 'master-<variant>' and 'master-abc0123-<variant>'
+        VARIANT="4.4"
         REF_VARIANT="${REF}-${VARIANT}"
         REF_SHA_VARIANT="${REF}-${SHA}-${VARIANT}"
 
         # Pass variables to next step
-        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_ENV
-        echo "VARIANT=$VARIANT" >> $GITHUB_ENV
-        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_ENV
-        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_ENV
+        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_OUTPUT
+        echo "VARIANT=$VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_OUTPUT
 
-    - name: Login to Docker Hub registry
-      # Run on master and tags
-      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
-        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-
-    - name: Build (PRs)
+    - name: 4.4 - Build (PRs)
       # Run only on pull requests
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
@@ -111,12 +111,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-4.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-4.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (master)
+    - name: 4.4 - Build and push (master)
       # Run only on master
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
@@ -125,12 +125,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-4.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-4.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (release)
+    - name: 4.4 - Build and push (release)
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
@@ -138,9 +138,9 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.VARIANT }}
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-4.outputs.VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-4.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-4.outputs.REF_SHA_VARIANT }}
           ${{ github.repository }}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
@@ -155,8 +155,6 @@ jobs:
 
   build-4-3:
     runs-on: ubuntu-latest
-    env:
-      VARIANT: 4.3
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -186,14 +184,22 @@ jobs:
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.VARIANT }}-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-4.3-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-buildx-${{ env.VARIANT }}-
+          ${{ runner.os }}-buildx-4.3-
           ${{ runner.os }}-buildx-
+
+    - name: Login to Docker Hub registry
+      # Run on master and tags
+      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
+        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
 
     # This step generates the docker tags
     - name: Prepare
-      id: prep
+      id: prep-4-3
       run: |
         set -e
 
@@ -206,24 +212,17 @@ jobs:
         # Generate docker image tags
         # E.g. 'v0.0.0-<variant>' and 'v0.0.0-abc0123-<variant>'
         # E.g. 'master-<variant>' and 'master-abc0123-<variant>'
+        VARIANT="4.3"
         REF_VARIANT="${REF}-${VARIANT}"
         REF_SHA_VARIANT="${REF}-${SHA}-${VARIANT}"
 
         # Pass variables to next step
-        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_ENV
-        echo "VARIANT=$VARIANT" >> $GITHUB_ENV
-        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_ENV
-        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_ENV
+        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_OUTPUT
+        echo "VARIANT=$VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_OUTPUT
 
-    - name: Login to Docker Hub registry
-      # Run on master and tags
-      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
-        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-
-    - name: Build (PRs)
+    - name: 4.3 - Build (PRs)
       # Run only on pull requests
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
@@ -232,12 +231,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-3.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-3.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (master)
+    - name: 4.3 - Build and push (master)
       # Run only on master
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
@@ -246,12 +245,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-3.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-3.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (release)
+    - name: 4.3 - Build and push (release)
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
@@ -259,9 +258,9 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.VARIANT }}
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-3.outputs.VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-3.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-3.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -275,8 +274,6 @@ jobs:
 
   build-4-2:
     runs-on: ubuntu-latest
-    env:
-      VARIANT: 4.2
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -306,14 +303,22 @@ jobs:
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.VARIANT }}-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-4.2-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-buildx-${{ env.VARIANT }}-
+          ${{ runner.os }}-buildx-4.2-
           ${{ runner.os }}-buildx-
+
+    - name: Login to Docker Hub registry
+      # Run on master and tags
+      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
+        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
 
     # This step generates the docker tags
     - name: Prepare
-      id: prep
+      id: prep-4-2
       run: |
         set -e
 
@@ -326,24 +331,17 @@ jobs:
         # Generate docker image tags
         # E.g. 'v0.0.0-<variant>' and 'v0.0.0-abc0123-<variant>'
         # E.g. 'master-<variant>' and 'master-abc0123-<variant>'
+        VARIANT="4.2"
         REF_VARIANT="${REF}-${VARIANT}"
         REF_SHA_VARIANT="${REF}-${SHA}-${VARIANT}"
 
         # Pass variables to next step
-        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_ENV
-        echo "VARIANT=$VARIANT" >> $GITHUB_ENV
-        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_ENV
-        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_ENV
+        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_OUTPUT
+        echo "VARIANT=$VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_OUTPUT
 
-    - name: Login to Docker Hub registry
-      # Run on master and tags
-      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
-        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-
-    - name: Build (PRs)
+    - name: 4.2 - Build (PRs)
       # Run only on pull requests
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
@@ -352,12 +350,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-2.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-2.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (master)
+    - name: 4.2 - Build and push (master)
       # Run only on master
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
@@ -366,12 +364,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-2.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-2.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (release)
+    - name: 4.2 - Build and push (release)
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
@@ -379,9 +377,9 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.VARIANT }}
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-2.outputs.VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-2.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-2.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -395,8 +393,6 @@ jobs:
 
   build-4-1:
     runs-on: ubuntu-latest
-    env:
-      VARIANT: 4.1
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -426,14 +422,22 @@ jobs:
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.VARIANT }}-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-4.1-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-buildx-${{ env.VARIANT }}-
+          ${{ runner.os }}-buildx-4.1-
           ${{ runner.os }}-buildx-
+
+    - name: Login to Docker Hub registry
+      # Run on master and tags
+      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
+        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
 
     # This step generates the docker tags
     - name: Prepare
-      id: prep
+      id: prep-4-1
       run: |
         set -e
 
@@ -446,24 +450,17 @@ jobs:
         # Generate docker image tags
         # E.g. 'v0.0.0-<variant>' and 'v0.0.0-abc0123-<variant>'
         # E.g. 'master-<variant>' and 'master-abc0123-<variant>'
+        VARIANT="4.1"
         REF_VARIANT="${REF}-${VARIANT}"
         REF_SHA_VARIANT="${REF}-${SHA}-${VARIANT}"
 
         # Pass variables to next step
-        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_ENV
-        echo "VARIANT=$VARIANT" >> $GITHUB_ENV
-        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_ENV
-        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_ENV
+        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_OUTPUT
+        echo "VARIANT=$VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_OUTPUT
 
-    - name: Login to Docker Hub registry
-      # Run on master and tags
-      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
-        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-
-    - name: Build (PRs)
+    - name: 4.1 - Build (PRs)
       # Run only on pull requests
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
@@ -472,12 +469,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-1.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-1.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (master)
+    - name: 4.1 - Build and push (master)
       # Run only on master
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
@@ -486,12 +483,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-1.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-1.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (release)
+    - name: 4.1 - Build and push (release)
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
@@ -499,9 +496,9 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.VARIANT }}
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-1.outputs.VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-1.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-1.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -515,8 +512,6 @@ jobs:
 
   build-4-0:
     runs-on: ubuntu-latest
-    env:
-      VARIANT: 4.0
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -546,14 +541,22 @@ jobs:
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.VARIANT }}-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-4.0-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-buildx-${{ env.VARIANT }}-
+          ${{ runner.os }}-buildx-4.0-
           ${{ runner.os }}-buildx-
+
+    - name: Login to Docker Hub registry
+      # Run on master and tags
+      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
+        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
 
     # This step generates the docker tags
     - name: Prepare
-      id: prep
+      id: prep-4-0
       run: |
         set -e
 
@@ -566,24 +569,17 @@ jobs:
         # Generate docker image tags
         # E.g. 'v0.0.0-<variant>' and 'v0.0.0-abc0123-<variant>'
         # E.g. 'master-<variant>' and 'master-abc0123-<variant>'
+        VARIANT="4.0"
         REF_VARIANT="${REF}-${VARIANT}"
         REF_SHA_VARIANT="${REF}-${SHA}-${VARIANT}"
 
         # Pass variables to next step
-        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_ENV
-        echo "VARIANT=$VARIANT" >> $GITHUB_ENV
-        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_ENV
-        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_ENV
+        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_OUTPUT
+        echo "VARIANT=$VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_OUTPUT
 
-    - name: Login to Docker Hub registry
-      # Run on master and tags
-      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
-        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-
-    - name: Build (PRs)
+    - name: 4.0 - Build (PRs)
       # Run only on pull requests
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
@@ -592,12 +588,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-0.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-0.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (master)
+    - name: 4.0 - Build and push (master)
       # Run only on master
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
@@ -606,12 +602,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-0.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-0.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (release)
+    - name: 4.0 - Build and push (release)
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
@@ -619,9 +615,9 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.VARIANT }}
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-0.outputs.VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-0.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-4-0.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -635,8 +631,6 @@ jobs:
 
   build-3-5-1:
     runs-on: ubuntu-latest
-    env:
-      VARIANT: 3.5.1
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -666,14 +660,22 @@ jobs:
       uses: actions/cache@v3
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.VARIANT }}-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-3.5.1-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-buildx-${{ env.VARIANT }}-
+          ${{ runner.os }}-buildx-3.5.1-
           ${{ runner.os }}-buildx-
+
+    - name: Login to Docker Hub registry
+      # Run on master and tags
+      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
+        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
 
     # This step generates the docker tags
     - name: Prepare
-      id: prep
+      id: prep-3-5-1
       run: |
         set -e
 
@@ -686,24 +688,17 @@ jobs:
         # Generate docker image tags
         # E.g. 'v0.0.0-<variant>' and 'v0.0.0-abc0123-<variant>'
         # E.g. 'master-<variant>' and 'master-abc0123-<variant>'
+        VARIANT="3.5.1"
         REF_VARIANT="${REF}-${VARIANT}"
         REF_SHA_VARIANT="${REF}-${SHA}-${VARIANT}"
 
         # Pass variables to next step
-        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_ENV
-        echo "VARIANT=$VARIANT" >> $GITHUB_ENV
-        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_ENV
-        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_ENV
+        echo "VARIANT_BUILD_DIR=$VARIANT_BUILD_DIR" >> $GITHUB_OUTPUT
+        echo "VARIANT=$VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_VARIANT=$REF_VARIANT" >> $GITHUB_OUTPUT
+        echo "REF_SHA_VARIANT=$REF_SHA_VARIANT" >> $GITHUB_OUTPUT
 
-    - name: Login to Docker Hub registry
-      # Run on master and tags
-      if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_REGISTRY_USER }}
-        password: ${{ secrets.DOCKERHUB_REGISTRY_PASSWORD }}
-
-    - name: Build (PRs)
+    - name: 3.5.1 - Build (PRs)
       # Run only on pull requests
       if: github.event_name == 'pull_request'
       uses: docker/build-push-action@v3
@@ -712,12 +707,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: false
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-3-5-1.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-3-5-1.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (master)
+    - name: 3.5.1 - Build and push (master)
       # Run only on master
       if: github.ref == 'refs/heads/master'
       uses: docker/build-push-action@v3
@@ -726,12 +721,12 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-3-5-1.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-3-5-1.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
-    - name: Build and push (release)
+    - name: 3.5.1 - Build and push (release)
       if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v3
       with:
@@ -739,9 +734,9 @@ jobs:
         platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/s390x
         push: true
         tags: |
-          ${{ github.repository }}:${{ env.VARIANT }}
-          ${{ github.repository }}:${{ env.REF_VARIANT }}
-          ${{ github.repository }}:${{ env.REF_SHA_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-3-5-1.outputs.VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-3-5-1.outputs.REF_VARIANT }}
+          ${{ github.repository }}:${{ steps.prep-3-5-1.outputs.REF_SHA_VARIANT }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -754,7 +749,13 @@ jobs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   update-draft-release:
-    needs: [build-4-4, build-4-3, build-4-2, build-4-1, build-4-0, build-3-5-1]
+    needs:
+      - build-4-4
+      - build-4-3
+      - build-4-2
+      - build-4-1
+      - build-4-0
+      - build-3-5-1
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
@@ -767,7 +768,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish-draft-release:
-    needs: [build-4-4, build-4-3, build-4-2, build-4-1, build-4-0, build-3-5-1]
+    needs:
+      - build-4-4
+      - build-4-3
+      - build-4-2
+      - build-4-1
+      - build-4-0
+      - build-3-5-1
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -782,7 +789,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   update-dockerhub-description:
-    needs: [build-4-4, build-4-3, build-4-2, build-4-1, build-4-0, build-3-5-1]
+    needs:
+      - build-4-4
+      - build-4-3
+      - build-4-2
+      - build-4-1
+      - build-4-0
+      - build-3-5-1
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
