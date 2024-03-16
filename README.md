@@ -1,6 +1,6 @@
 # docker-chrony
 
-[![github-actions](https://github.com/theohbrothers/docker-chrony/workflows/ci-master-pr/badge.svg)](https://github.com/theohbrothers/docker-chrony/actions)
+[![github-actions](https://github.com/theohbrothers/docker-chrony/actions/workflows/ci-master-pr.yml/badge.svg?branch=master)](https://github.com/theohbrothers/docker-chrony/actions/workflows/ci-master-pr.yml)
 [![github-release](https://img.shields.io/github/v/release/theohbrothers/docker-chrony?style=flat-square)](https://github.com/theohbrothers/docker-chrony/releases/)
 [![docker-image-size](https://img.shields.io/docker/image-size/theohbrothers/docker-chrony/latest)](https://hub.docker.com/r/theohbrothers/docker-chrony)
 
