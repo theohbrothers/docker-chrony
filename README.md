@@ -10,7 +10,8 @@ Dockerized [chrony](https://chrony.tuxfamily.org/) based on alpine.
 
 | Tag | Dockerfile Build Context |
 |:-------:|:---------:|
-| `:4.5`, `:latest` | [View](variants/4.5) |
+| `:4.6`, `:latest` | [View](variants/4.6) |
+| `:4.5` | [View](variants/4.5) |
 | `:4.3` | [View](variants/4.3) |
 | `:4.2` | [View](variants/4.2) |
 | `:4.1` | [View](variants/4.1) |
